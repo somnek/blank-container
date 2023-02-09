@@ -1,5 +1,5 @@
 # blank-container
-Empty docker container that run forever 🧩
+Spin up an empty docker container that run forever 🧩
 
 ## Usage
 ```bash
