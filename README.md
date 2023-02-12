@@ -1,5 +1,5 @@
 # blank-container
-Spin up an empty docker container that run forever 🧩
+Quickest way to spin up Docker container(s) 🧩
 
 ## Usage
 ```bash
