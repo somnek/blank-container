@@ -2,9 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	docker "github.com/fsouza/go-dockerclient"
 	"github.com/spf13/cobra"
 )
 
@@ -28,48 +26,45 @@ var (
 		Short: "Start containers",
 		Long:  "Start 1 or more empty containers",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := conn()
+			fmt.Println("place holder...")
+		},
+	}
 
+	// blank images
+	listImgCmd = &cobra.Command{
+		Use:   "images",
+		Short: "List images",
+		Long:  "List all the images",
+		Run: func(cmd *cobra.Command, args []string) {
+			client := conn()
 			images := getImages(client)
 			for _, image := range images {
-				fmt.Println(image.RepoTags)
+				if len(image.RepoTags) != 0 {
+					tag := image.RepoTags[0]
+					fmt.Println(tag)
+				}
 			}
+		},
+	}
 
+	// blank containers
+	listContCmd = &cobra.Command{
+		Use:   "containers",
+		Short: "List containers",
+		Long:  "List all the containers",
+		Run: func(cmd *cobra.Command, args []string) {
+			client := conn()
 			containers := getContainers(client)
 			for _, container := range containers {
-				fmt.Println(container.Names)
+				name := container.Names[0][1:]
+				fmt.Println(name)
 			}
-
 		},
 	}
 )
 
-func conn() *docker.Client {
-	client, err := docker.NewClientFromEnv()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return client
-}
-
-func getImages(client *docker.Client) []docker.APIImages {
-	images, err := client.ListImages(docker.ListImagesOptions{All: false})
-	if err != nil {
-		log.Fatal(err)
-	}
-	return images
-}
-
-func getContainers(client *docker.Client) []docker.APIContainers {
-	containers, err := client.ListContainers(docker.ListContainersOptions{All: false})
-	if err != nil {
-		log.Fatal(err)
-	}
-	return containers
-}
-
 func main() {
 	upCmd.Flags().IntVarP(&count, "count", "c", 1, "Number of containers to start, default to 1")
-	rootCmd.AddCommand(upCmd)
+	rootCmd.AddCommand(upCmd, listContCmd, listImgCmd)
 	rootCmd.Execute()
 }
