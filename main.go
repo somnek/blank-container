@@ -26,7 +26,10 @@ var (
 		Short: "Start containers",
 		Long:  "Start 1 or more empty containers",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("place holder...")
+			// if !imageExist() {
+
+			// }
+			fmt.Println("place holder...", count)
 		},
 	}
 
