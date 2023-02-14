@@ -1,5 +1,5 @@
 # blank-container
-Quickest way to spin up emtpy Docker container(s) 🧩
+Quickest way to spin up empty Docker container(s) 🧩
 
 ## Usage
 ```bash
