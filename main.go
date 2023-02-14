@@ -26,10 +26,28 @@ var (
 		Short: "Start containers",
 		Long:  "Start 1 or more empty containers",
 		Run: func(cmd *cobra.Command, args []string) {
-			// if !imageExist() {
+			client := conn()
+			// image
+			if !imageExist(client) {
+				fmt.Println("Unable to find image \"busybox:latest\", pulling...")
+				pullImage(client)
+			} else {
+				fmt.Println("found existing \"busybox:latest\" image...")
+			}
 
-			// }
-			fmt.Println("place holder...", count)
+			// container (create)
+			if !containerExist(client, CONTAINER_NAME) {
+				fmt.Println("Unable to find container \"empty-container\", creating...")
+				createContainer(client)
+			}
+
+			// container (start)
+			if !containerRunning(client, CONTAINER_NAME) {
+				fmt.Println("Starting \"empty-container\" container...")
+				startContainer(client)
+			} else {
+				fmt.Println("\"empty-container\" is already running...")
+			}
 		},
 	}
 
