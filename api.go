@@ -16,6 +16,48 @@ func conn() *docker.Client {
 	return client
 }
 
+func removeContainer(client *docker.Client, name string) {
+	var emptyContainerID string
+	containerNames := []string{}
+
+	for _, container := range getContainers(client) {
+		name := container.Names[0][1:]
+		id := container.ID
+		if name == CONTAINER_NAME {
+			emptyContainerID = id
+		}
+		containerNames = append(containerNames, name)
+	}
+
+	if !contains(containerNames, name) {
+		fmt.Println("No container to remove, skipping...")
+		return
+	}
+
+	opts := docker.RemoveContainerOptions{ID: emptyContainerID, Force: true}
+	if err := client.RemoveContainer(opts); err != nil {
+		log.Fatal("Error when trying to remove container", err)
+	}
+	fmt.Println("🧹 Container removed...")
+}
+
+func removeImage(client *docker.Client, name string) {
+	imageNames := []string{}
+	for _, image := range getImages(client) {
+		imageNames = append(imageNames, image.RepoTags...)
+	}
+
+	if !contains(imageNames, name) {
+		fmt.Println("No image to remove, skipping...")
+		return
+	}
+
+	if err := client.RemoveImage(name); err != nil {
+		log.Fatal("Error when trying to remove image", err)
+	}
+	fmt.Println("🧹 Image removed...")
+}
+
 func getImages(client *docker.Client) []docker.APIImages {
 	images, err := client.ListImages(docker.ListImagesOptions{All: false})
 	if err != nil {

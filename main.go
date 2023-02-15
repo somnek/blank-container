@@ -20,6 +20,14 @@ var (
 		},
 	}
 
+	xCmd = &cobra.Command{
+		Use:   "x",
+		Short: "test",
+		Run: func(cmd *cobra.Command, args []string) {
+			// test
+		},
+	}
+
 	// blank up --count={count}
 	upCmd = &cobra.Command{
 		Use:   "up",
@@ -48,6 +56,17 @@ var (
 			} else {
 				fmt.Println("\"empty-container\" is already running...")
 			}
+		},
+	}
+
+	// clean
+	cleanCmd = &cobra.Command{
+		Use:   "clean",
+		Short: "Remove created images & container",
+		Long:  "Remove [empty-container] container & [busybox:latest] images",
+		Run: func(cmd *cobra.Command, args []string) {
+			// removeContainer(client)
+			// removeImage(client)
 		},
 	}
 
@@ -86,6 +105,6 @@ var (
 
 func main() {
 	upCmd.Flags().IntVarP(&count, "count", "c", 1, "Number of containers to start, default to 1")
-	rootCmd.AddCommand(upCmd, listContCmd, listImgCmd)
+	rootCmd.AddCommand(xCmd, upCmd, listContCmd, listImgCmd)
 	rootCmd.Execute()
 }

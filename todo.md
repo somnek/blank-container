@@ -1,5 +1,8 @@
 ### Feature:
 ------------------
+# style output:
+- using lipgloss or some shit idk
+
 Cmd:
   * remove (remove container(s))
   * tui (tui mode)
