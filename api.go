@@ -16,7 +16,7 @@ func conn() *docker.Client {
 	return client
 }
 
-func removeContainer(client *docker.Client, name string) {
+func removeContainer(client *docker.Client) {
 	var emptyContainerID string
 	containerNames := []string{}
 
@@ -29,7 +29,7 @@ func removeContainer(client *docker.Client, name string) {
 		containerNames = append(containerNames, name)
 	}
 
-	if !contains(containerNames, name) {
+	if !contains(containerNames, CONTAINER_NAME) {
 		fmt.Println("No container to remove, skipping...")
 		return
 	}
@@ -41,18 +41,18 @@ func removeContainer(client *docker.Client, name string) {
 	fmt.Println("🧹 Container removed...")
 }
 
-func removeImage(client *docker.Client, name string) {
+func removeImage(client *docker.Client) {
 	imageNames := []string{}
 	for _, image := range getImages(client) {
 		imageNames = append(imageNames, image.RepoTags...)
 	}
 
-	if !contains(imageNames, name) {
+	if !contains(imageNames, IMAGE_NAME) {
 		fmt.Println("No image to remove, skipping...")
 		return
 	}
 
-	if err := client.RemoveImage(name); err != nil {
+	if err := client.RemoveImage(IMAGE_NAME); err != nil {
 		log.Fatal("Error when trying to remove image", err)
 	}
 	fmt.Println("🧹 Image removed...")

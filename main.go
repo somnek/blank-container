@@ -65,8 +65,9 @@ var (
 		Short: "Remove created images & container",
 		Long:  "Remove [empty-container] container & [busybox:latest] images",
 		Run: func(cmd *cobra.Command, args []string) {
-			// removeContainer(client)
-			// removeImage(client)
+			client := conn()
+			removeContainer(client)
+			removeImage(client)
 		},
 	}
 
@@ -105,6 +106,6 @@ var (
 
 func main() {
 	upCmd.Flags().IntVarP(&count, "count", "c", 1, "Number of containers to start, default to 1")
-	rootCmd.AddCommand(xCmd, upCmd, listContCmd, listImgCmd)
+	rootCmd.AddCommand(xCmd, upCmd, listContCmd, listImgCmd, cleanCmd)
 	rootCmd.Execute()
 }
