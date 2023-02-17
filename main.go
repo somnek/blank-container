@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -38,36 +41,37 @@ var (
 			client := conn()
 			// image
 			if !imageExist(client) {
-				fmt.Println("Unable to find image \"busybox:latest\", pulling...")
+				fmt.Println("🎣 Unable to find image \"busybox:latest\", pulling...")
 				pullImage(client)
-			} else {
-				fmt.Println("found existing \"busybox:latest\" image...")
 			}
 
-			// container (create)
-			if !containerExist(client, CONTAINER_NAME) {
-				fmt.Println("Unable to find container \"empty-container\", creating...")
-				createContainer(client, CONTAINER_NAME)
-			}
-
-			// container(start)
-			if !containerRunning(client, CONTAINER_NAME) {
-				fmt.Println("Starting \"empty-container\" container...")
-				startContainer(client, CONTAINER_NAME)
-			} else if count > 1 {
-				// --count flag
-				containers := getContainers(client)
-				for _, container := range containers {
-					fmt.Println(container.Names[0][1:])
-				}
-				for i := 0; i < count; i++ {
-					name := fmt.Sprintf(CONTAINER_NAME+"-%d", i)
-					createContainer(client, name)
-					startContainer(client, name)
-				}
+			// container (create & start)
+			var startIdx int
+			if !containerExist(client) {
+				startIdx = 1
 			} else {
-				// default
-				fmt.Println("\"empty-container\" is already running...")
+				// get the max container index name
+				var max int
+				for _, container := range getContainers(client) {
+					name := container.Names[0][1:]
+					if strings.Contains(name, CONTAINER_NAME) {
+						nameSplit := strings.Split(name, "-")
+						containerIdx, err := strconv.Atoi(nameSplit[len(nameSplit)-1])
+						if err != nil {
+							log.Fatal(err)
+						}
+						if containerIdx > max {
+							max = containerIdx
+						}
+					}
+				}
+				startIdx = max + 1
+			}
+			for i := startIdx; i < count+startIdx; i++ {
+				name := fmt.Sprintf("%s-%d", CONTAINER_NAME, i)
+				fmt.Println(name)
+				createContainer(client, name)
+				startContainer(client, name)
 			}
 		},
 	}

@@ -25,3 +25,4 @@ Cmd:
 ------------------
 [ ] count flag (blank --count=2)
 [-] stop all `container` gracefully before remove them, then proceed to remove `images`
+[ ] ignore stopped containers for now (no need to check if is running), irrelavent

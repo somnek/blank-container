@@ -40,8 +40,9 @@ func removeContainer(client *docker.Client) {
 		if err := client.RemoveContainer(opts); err != nil {
 			log.Fatal("Error when trying to remove container", err)
 		}
-		fmt.Printf("🧹 Container removed... [%s]\n", containerNames[i])
+		fmt.Printf("🗑️   removing [%s] ...\n", containerNames[i])
 	}
+	fmt.Println("🧹 Containers removed...")
 }
 
 func removeImage(client *docker.Client) {
@@ -110,13 +111,15 @@ func containerRunning(client *docker.Client, name string) bool {
 	return false
 }
 
-func containerExist(client *docker.Client, name string) bool {
+func containerExist(client *docker.Client) bool {
 	containers := getContainers(client)
-	containerNames := []string{}
 	for _, container := range containers {
-		containerNames = append(containerNames, container.Names[0][1:])
+		name := container.Names[0][1:]
+		if strings.Contains(name, CONTAINER_NAME) {
+			return true
+		}
 	}
-	return contains(containerNames, name)
+	return false
 }
 
 func imageExist(client *docker.Client) bool {
