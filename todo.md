@@ -20,3 +20,8 @@ Cmd:
 - docker:
   * lazy-docker
   * go-docker-client
+
+# TODO LIST
+------------------
+[ ] count flag (blank --count=2)
+[-] stop all `container` gracefully before remove them, then proceed to remove `images`

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"strings"
 
 	docker "github.com/fsouza/go-dockerclient"
 )
@@ -17,28 +18,30 @@ func conn() *docker.Client {
 }
 
 func removeContainer(client *docker.Client) {
-	var emptyContainerID string
 	containerNames := []string{}
+	containerIds := []string{}
 
 	for _, container := range getContainers(client) {
 		name := container.Names[0][1:]
 		id := container.ID
-		if name == CONTAINER_NAME {
-			emptyContainerID = id
+		if strings.Contains(name, CONTAINER_NAME) {
+			containerIds = append(containerIds, id)
 		}
 		containerNames = append(containerNames, name)
 	}
 
-	if !contains(containerNames, CONTAINER_NAME) {
+	if len(containerNames) == 0 {
 		fmt.Println("No container to remove, skipping...")
 		return
 	}
 
-	opts := docker.RemoveContainerOptions{ID: emptyContainerID, Force: true}
-	if err := client.RemoveContainer(opts); err != nil {
-		log.Fatal("Error when trying to remove container", err)
+	for i, id := range containerIds {
+		opts := docker.RemoveContainerOptions{ID: id, Force: true}
+		if err := client.RemoveContainer(opts); err != nil {
+			log.Fatal("Error when trying to remove container", err)
+		}
+		fmt.Printf("🧹 Container removed... [%s]\n", containerNames[i])
 	}
-	fmt.Println("🧹 Container removed...")
 }
 
 func removeImage(client *docker.Client) {
@@ -74,13 +77,13 @@ func getContainers(client *docker.Client) []docker.APIContainers {
 	return containers
 }
 
-func createContainer(client *docker.Client) {
+func createContainer(client *docker.Client, name string) {
 	config := docker.Config{
 		Image: IMAGE_NAME,
 		Cmd:   []string{"tail", "-f", "/dev/null"},
 	}
 	opts := docker.CreateContainerOptions{
-		Name:   CONTAINER_NAME,
+		Name:   name,
 		Config: &config,
 	}
 	_, err := client.CreateContainer(opts)
@@ -89,8 +92,8 @@ func createContainer(client *docker.Client) {
 	}
 }
 
-func startContainer(client *docker.Client) {
-	err := client.StartContainer(CONTAINER_NAME, nil)
+func startContainer(client *docker.Client, name string) {
+	err := client.StartContainer(name, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

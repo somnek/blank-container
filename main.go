@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	count = 1 // container count
+	count   = 1 // container count
+	keepImg = 0 // keep busybox:latest image
 )
 
 var (
@@ -46,14 +47,26 @@ var (
 			// container (create)
 			if !containerExist(client, CONTAINER_NAME) {
 				fmt.Println("Unable to find container \"empty-container\", creating...")
-				createContainer(client)
+				createContainer(client, CONTAINER_NAME)
 			}
 
-			// container (start)
+			// container(start)
 			if !containerRunning(client, CONTAINER_NAME) {
 				fmt.Println("Starting \"empty-container\" container...")
-				startContainer(client)
+				startContainer(client, CONTAINER_NAME)
+			} else if count > 1 {
+				// --count flag
+				containers := getContainers(client)
+				for _, container := range containers {
+					fmt.Println(container.Names[0][1:])
+				}
+				for i := 0; i < count; i++ {
+					name := fmt.Sprintf(CONTAINER_NAME+"-%d", i)
+					createContainer(client, name)
+					startContainer(client, name)
+				}
 			} else {
+				// default
 				fmt.Println("\"empty-container\" is already running...")
 			}
 		},
@@ -67,7 +80,9 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			client := conn()
 			removeContainer(client)
-			removeImage(client)
+			if keepImg == 0 {
+				removeImage(client)
+			}
 		},
 	}
 
@@ -106,6 +121,7 @@ var (
 
 func main() {
 	upCmd.Flags().IntVarP(&count, "count", "c", 1, "Number of containers to start, default to 1")
+	cleanCmd.Flags().IntVarP(&keepImg, "keep", "k", 0, "Whether to keep busybox:latest image, default to false")
 	rootCmd.AddCommand(xCmd, upCmd, listContCmd, listImgCmd, cleanCmd)
 	rootCmd.Execute()
 }
