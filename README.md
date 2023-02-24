@@ -12,7 +12,14 @@ git clone https://github.com/somnek/blank-container.git
 ## Usage
 ```bash
     ./whale [OPTIONS]
-        --run       Run empty container
-        --stop      Stop all containers
-        --clean     Remove the image & container
+        --up       Run empty container
+        --clean    Remove the image & container
 ```
+
+## Example
+* create multiple containers
+```bash
+    ./whale up --count=4
+```
+
+This example will create 4 containers
