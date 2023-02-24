@@ -2,6 +2,7 @@
 Quickest way to spin up empty Docker container(s) 🧩
 
 ## Installation
+Only support git clone for now.
 
 ### Git Clone
 ```
