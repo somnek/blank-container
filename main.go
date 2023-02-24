@@ -24,14 +24,6 @@ var (
 		},
 	}
 
-	xCmd = &cobra.Command{
-		Use:   "x",
-		Short: "test",
-		Run: func(cmd *cobra.Command, args []string) {
-			// test
-		},
-	}
-
 	// blank up --count={count}
 	upCmd = &cobra.Command{
 		Use:   "up",
@@ -126,6 +118,6 @@ var (
 func main() {
 	upCmd.Flags().IntVarP(&count, "count", "c", 1, "Number of containers to start, default to 1")
 	cleanCmd.Flags().IntVarP(&keepImg, "keep", "k", 0, "Whether to keep busybox:latest image, default to false")
-	rootCmd.AddCommand(xCmd, upCmd, listContCmd, listImgCmd, cleanCmd)
+	rootCmd.AddCommand(upCmd, listContCmd, listImgCmd, cleanCmd)
 	rootCmd.Execute()
 }
