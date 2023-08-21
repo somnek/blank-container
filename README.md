@@ -4,14 +4,18 @@ Quickest way to spin up empty Docker container(s) 🧩
 ## Installation
 Only support git clone for now.
 
-### Git Clone
+# 1. Git Clone
 ```
 git clone https://github.com/somnek/blank-container.git
+```
+# 2. Build
+```
+go build -o blank .
 ```
 
 ## Usage
 ```bash
-    ./whale [OPTIONS]
+    ./blank [OPTIONS]
         --up       Run empty container
         --clean    Remove the image & container
 ```
@@ -19,7 +23,7 @@ git clone https://github.com/somnek/blank-container.git
 ## Example
 * create multiple containers
 ```bash
-    ./whale up --count=4
+    ./blank up --count=4
 ```
 
 This example will create 4 containers
