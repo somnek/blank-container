@@ -4,12 +4,9 @@ Quickest way to spin up empty Docker container(s) 🧩
 ## Installation
 Only support git clone for now.
 
-# 1. Git Clone
+### Clone & build
 ```
 git clone https://github.com/somnek/blank-container.git
-```
-# 2. Build
-```
 go build -o blank .
 ```
 
