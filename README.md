@@ -19,7 +19,7 @@ then you can move the binary to your $PATH
 
 ```bash
     ./blank [OPTIONS]
-        --up       Run empty container
+        --start    Run empty container
         --clean    Remove the image & container
 ```
 
@@ -28,7 +28,7 @@ then you can move the binary to your $PATH
 - create multiple containers
 
 ```bash
-    ./blank up --count=4
+    ./blank start --count=4
 ```
 
 This example will create 4 containers
